@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import {NavLink, Link} from 'react-router-dom'
 
 
 
@@ -12,7 +13,7 @@ function Header() {
     <>
     <Navbar bg="light" expand="lg">
       <Container fluid>
-        <Navbar.Brand href="#">Bloggers</Navbar.Brand>
+        <Navbar.Brand as={Link} to='home'>Bloggers</Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
           <Nav
@@ -20,9 +21,11 @@ function Header() {
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
-            <Nav.Link href="#action1">Contacts</Nav.Link>
-            <Nav.Link href="#action2">Register</Nav.Link>
-            <Nav.Link href="#">
+            <Nav.Link as={NavLink} to='contacts' >Contacts</Nav.Link>
+            <Nav.Link as={NavLink} to='add-contact' >Add Contact</Nav.Link>
+            <Nav.Link as={NavLink} to='edit-contact' >Edit Contact</Nav.Link>
+            <Nav.Link as={NavLink} to='register' >Register</Nav.Link>
+            <Nav.Link as={NavLink} to='login' >
               Log In
             </Nav.Link>
           </Nav>

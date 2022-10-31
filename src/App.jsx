@@ -1,10 +1,19 @@
 import React from "react";
 import { useState } from "react";
-import Contacts from "./contacts/Contacts";
-import Header from "./contacts/layout/Header";
+import Contacts from "./pages/Contacts";
+import Header from "./layout/Header";
 import { Container } from "react-bootstrap";
-import AddContacts from "./contacts/AddContacts";
-import { v4 as uuidv4 } from 'uuid';
+import ContactForm from "./components/contacts/ContactForm";
+import { v4 as uuidv4 } from "uuid";
+import { ToastContainer } from "react-toastify";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import NotFound from "./pages/NotFound";
+import LogIn from "./pages/LogIn";
+import Register from "./pages/Register";
+import Home from "./pages/Home";
+import EditContact from "./pages/EditContact";
+import AddContact from "./pages/AddContact";
+import ContactDetails from "./pages/ContactDetails";
 
 const initialContacts = [
   {
@@ -96,26 +105,89 @@ function App() {
     setContacts(updatedContact);
   };
 
-  const addContact = contact  => {
-    // console.log(contact);
-const updatedContacts = {
-  id: uuidv4(),
-  ...contact,
-}
+  const updateContact = (contactToUpdate, id) => {
+    const contactsWithUpdate = contacts.map((contact) => {
+      if (contact.id === id) {
+        return {
+          id,
+          ...contactToUpdate,
+        };
+      } else {
+        return contact;
+      }
+    });
 
-    setContacts([updatedContacts, ...contacts])
+    setContacts(contactsWithUpdate);
+  };
+
+  const addContact = (contact) => {
+    // console.log(contact);
+    const updatedContacts = {
+      id: uuidv4(),
+      ...contact,
+    };
+
+    setContacts([updatedContacts, ...contacts]);
   };
 
   return (
     <>
-      <Header />
-      <Container
-        className="text-center mt-3"
-        style={{ width: "800px", margin: "0 auto" }}
-      >
-        <AddContacts addContact={addContact} />
-        <Contacts contacts={contacts} deleteContact={deleteContact} />
-      </Container>
+      <BrowserRouter>
+        <Header />
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+        <Container
+          className="text-center mt-3"
+          style={{ width: "800px", margin: "0 auto" }}
+        >
+          <Routes>
+            <Route path="/home" index element={<Home />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<LogIn />} />
+
+            <Route
+              path="/add-contact"
+              element={<AddContact addContact={addContact} />}
+            />
+            <Route
+              path="/contacts"
+              element={
+                <Contacts contacts={contacts} deleteContact={deleteContact} />
+              }
+            />
+            <Route
+              path="/edit-contact/:id"
+              element={
+                <EditContact
+                  updateContact={updateContact}
+                  contacts={contacts}
+                />
+              }
+            />
+             <Route
+              path="/contacts/:id"
+              element={
+                <ContactDetails
+                  contacts={contacts}
+                  deleteContact={deleteContact}
+                />
+              }
+            />
+
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Container>
+      </BrowserRouter>
     </>
   );
 }

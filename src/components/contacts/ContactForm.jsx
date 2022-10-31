@@ -4,6 +4,10 @@ import DatePicker from "react-datepicker";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { toast } from 'react-toastify';
+import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 const schema = yup
   .object({
@@ -40,9 +44,10 @@ const schema = yup
   })
   .required();
 
-function AddContacts({ addContact }) {
+function ContactForm({ addContact, updateContact, foundContact}) {
   const [birthYear, setBirthYear] = useState(new Date());
-
+  const navigate = useNavigate()
+console.log(foundContact);
   const {
     register,
     handleSubmit,
@@ -59,22 +64,47 @@ function AddContacts({ addContact }) {
     if (isSubmitSuccessful) {
       reset({
         firstName : '',
-        lastName : '',
+        lastName :  '',
         email: '',
         gender: 'male',
-        profession: '',
-        image: '',
+        profession:  '',
+        image:  '',
         bio: '',
-        dateOfBirth : '',
+        dateOfBirth :'',
       })
     }
   },[isSubmitSuccessful])
 
-  const onSubmit = (data) => console.log(data);
+  const defaultContact = {
+    firstName :  foundContact?.firstName || 'Abu Nasir',
+    lastName : foundContact?.lastName || 'Leemon',
+    email: foundContact?.email ||  'leemon174@gmail.com',
+    gender: foundContact?.gender || 'male',
+    profession: foundContact?.profession || 'developer',
+    image: foundContact?.image || 'https://scontent-ccu1-1.xx.fbcdn.net/v/t39.30808-6/283783578_1618795568496799_5358402685246666311_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=730e14&_nc_eui2=AeFavoevnXaGXr3_swd8tcFYZCvtwUX0RhhkK-3BRfRGGILF2uKUSa_Ivk2-iSteROID_7a6KbpcHoOIVyuxN6FK&_nc_ohc=el5xOuiL_KIAX_JbUaY&_nc_ht=scontent-ccu1-1.xx&oh=00_AfDVfrj2CtQ-qHrynaC_8Bez9um-wuVd9kd1Lej_3QUUcA&oe=6363D906',
+    bio: foundContact?.bio || 'Bio Bio Bio Bio bio Bio N9p',
+    dateOfBirth :  foundContact?.dateOfBirth ||  '23/12/1995',
+  }
+
+  const {firstName, lastName, email, gender, profession, image, bio, dateOfBirth} = defaultContact
+
+  const onSubmit = (data) => {
+  
+   
+    if (foundContact?.id) {
+      toast.success('Contact Updated Successfully');
+      updateContact(data, foundContact?.id)
+      
+    } else {
+      toast.success('Contact Added Successfully');
+      addContact(data)
+    }
+    navigate('/contacts')
+  };
 
   return (
     <>
-      <h2 className="text-center"> Add Contacts </h2>
+      <h2 className="text-center"> {foundContact?.id ? 'Update Contact' : 'Add Contact'} </h2>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.Group as={Row} className="mb-3">
           <Col sm={3}>
@@ -86,7 +116,7 @@ function AddContacts({ addContact }) {
             <Form.Control
               type="text"
               id="firstName"
-              defaultValue=""
+              defaultValue={firstName}
               {...register("firstName")}
               isInvalid={errors?.firstName?.message}
               placeholder="Enter Your First Name"
@@ -107,7 +137,7 @@ function AddContacts({ addContact }) {
               type="text"
               id="lastName"
               name="lastName"
-              defaultValue=""
+              defaultValue={lastName}
               {...register("lastName")}
               isInvalid={errors?.lastName?.message}
               placeholder="Enter Your Last Name"
@@ -128,7 +158,7 @@ function AddContacts({ addContact }) {
               type="email"
               id="email"
               name="email"
-              defaultValue=""
+              defaultValue={email}
               {...register("email")}
               isInvalid={errors?.email?.message}
               placeholder="Enter Your Email"
@@ -149,8 +179,10 @@ function AddContacts({ addContact }) {
               label="Male"
               type="radio"
               name="gender"
+              defaultChecked={gender === 'male'}
               {...register("gender")}
               value="male"
+              
             />
           </Col>
           <Col>
@@ -158,6 +190,7 @@ function AddContacts({ addContact }) {
               label="Female"
               type="radio"
               name="gender"
+              defaultChecked={gender === 'female'}
               {...register("gender")}
               value="female"
             />
@@ -174,7 +207,7 @@ function AddContacts({ addContact }) {
           </Col>
           <Col sm={9}>
             <Form.Select
-              defaultValue=""
+              defaultValue={profession}
               {...register("profession")}
               isInvalid={errors?.profession?.message}
               aria-label="Select your profession"
@@ -182,7 +215,7 @@ function AddContacts({ addContact }) {
               <option value="" disabled>
                 Select your profession
               </option>
-              <option value="developer">Developer</option>
+              <option value="developer">Web Developer</option>
               <option value="designer">Designer</option>
               <option value="marketer">Markerter</option>
             </Form.Select>
@@ -206,6 +239,7 @@ function AddContacts({ addContact }) {
               onChange={(date) => setBirthYear(date)}
               showYearDropdown
               placeholderText="Enter Your Date of Birth"
+              defaultValue={dateOfBirth}
             />
           </Col>
         </Form.Group>
@@ -220,7 +254,7 @@ function AddContacts({ addContact }) {
               type="text"
               id="image"
               name="image"
-              defaultValue=""
+              defaultValue={image}
               {...register("image")}
               isInvalid={errors?.image?.message}
               placeholder="Enter Your Image URL"
@@ -241,7 +275,7 @@ function AddContacts({ addContact }) {
               type="text-area"
               id="bio"
               name="bio"
-              defaultValue=""
+              defaultValue={bio}
               {...register("bio")}
               isInvalid={errors?.bio?.message}
               placeholder="Enter Your Bio"
@@ -252,11 +286,11 @@ function AddContacts({ addContact }) {
           </Col>
         </Form.Group>
         <Button type="submit" variant="primary" disabled={isSubmitting ? 'disabled' : ''}>
-          Add Contact
+        {foundContact?.id ? 'Update Contact' : 'Add Contact'}
         </Button>
       </Form>
     </>
   );
 }
 
-export default AddContacts;
+export default ContactForm;
