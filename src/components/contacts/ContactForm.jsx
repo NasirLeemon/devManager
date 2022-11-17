@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { toast } from 'react-toastify';
-import { Navigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+import { ContactContext } from "../../context/ContactContext";
+import FormTextInput from "../../layout/FormTextInput";
 
 const schema = yup
   .object({
@@ -44,130 +44,108 @@ const schema = yup
   })
   .required();
 
-function ContactForm({ addContact, updateContact, foundContact}) {
+function ContactForm({ foundContact }) {
+  const context = useContext(ContactContext);
+  const { addContact, updateContact } = context;
+
   const [birthYear, setBirthYear] = useState(new Date());
-  const navigate = useNavigate()
-console.log(foundContact);
+  const navigate = useNavigate();
+  console.log(foundContact);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitSuccessful, isSubmitting },
     setValue,
-    reset
+    reset,
   } = useForm({ resolver: yupResolver(schema) });
 
   useEffect(() => {
     setValue("dateOfBirth", birthYear);
   }, [birthYear]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (isSubmitSuccessful) {
       reset({
-        firstName : '',
-        lastName :  '',
-        email: '',
-        gender: 'male',
-        profession:  '',
-        image:  '',
-        bio: '',
-        dateOfBirth :'',
-      })
+        firstName: "",
+        lastName: "",
+        email: "",
+        gender: "male",
+        profession: "",
+        image: "",
+        bio: "",
+        dateOfBirth: "",
+      });
     }
-  },[isSubmitSuccessful])
+  }, [isSubmitSuccessful]);
 
   const defaultContact = {
-    firstName :  foundContact?.firstName || 'Abu Nasir',
-    lastName : foundContact?.lastName || 'Leemon',
-    email: foundContact?.email ||  'leemon174@gmail.com',
-    gender: foundContact?.gender || 'male',
-    profession: foundContact?.profession || 'developer',
-    image: foundContact?.image || 'https://scontent-ccu1-1.xx.fbcdn.net/v/t39.30808-6/283783578_1618795568496799_5358402685246666311_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=730e14&_nc_eui2=AeFavoevnXaGXr3_swd8tcFYZCvtwUX0RhhkK-3BRfRGGILF2uKUSa_Ivk2-iSteROID_7a6KbpcHoOIVyuxN6FK&_nc_ohc=el5xOuiL_KIAX_JbUaY&_nc_ht=scontent-ccu1-1.xx&oh=00_AfDVfrj2CtQ-qHrynaC_8Bez9um-wuVd9kd1Lej_3QUUcA&oe=6363D906',
-    bio: foundContact?.bio || 'Bio Bio Bio Bio bio Bio N9p',
-    dateOfBirth :  foundContact?.dateOfBirth ||  '23/12/1995',
-  }
+    firstName: foundContact?.firstName || "Abu Nasir",
+    lastName: foundContact?.lastName || "Leemon",
+    email: foundContact?.email || "leemon174@gmail.com",
+    gender: foundContact?.gender || "male",
+    profession: foundContact?.profession || "developer",
+    image:
+      foundContact?.image ||
+      "https://scontent-ccu1-1.xx.fbcdn.net/v/t39.30808-6/283783578_1618795568496799_5358402685246666311_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=730e14&_nc_eui2=AeFavoevnXaGXr3_swd8tcFYZCvtwUX0RhhkK-3BRfRGGILF2uKUSa_Ivk2-iSteROID_7a6KbpcHoOIVyuxN6FK&_nc_ohc=el5xOuiL_KIAX_JbUaY&_nc_ht=scontent-ccu1-1.xx&oh=00_AfDVfrj2CtQ-qHrynaC_8Bez9um-wuVd9kd1Lej_3QUUcA&oe=6363D906",
+    bio: foundContact?.bio || "Bio Bio Bio Bio bio Bio N9p",
+    dateOfBirth: foundContact?.dateOfBirth || "23/12/1995",
+  };
 
-  const {firstName, lastName, email, gender, profession, image, bio, dateOfBirth} = defaultContact
+  const {
+    firstName,
+    lastName,
+    email,
+    gender,
+    profession,
+    image,
+    bio,
+    dateOfBirth,
+  } = defaultContact;
 
   const onSubmit = (data) => {
-  
-   
     if (foundContact?.id) {
-      toast.success('Contact Updated Successfully');
-      updateContact(data, foundContact?.id)
-      
+      toast.success("Contact Updated Successfully");
+      updateContact(data, foundContact?.id);
     } else {
-      toast.success('Contact Added Successfully');
-      addContact(data)
+      toast.success("Contact Added Successfully");
+      addContact(data);
     }
-    navigate('/contacts')
+    navigate("/contacts");
   };
 
   return (
     <>
-      <h2 className="text-center"> {foundContact?.id ? 'Update Contact' : 'Add Contact'} </h2>
+      <h2 className="text-center">
+        {" "}
+        {foundContact?.id ? "Update Contact" : "Add Contact"}{" "}
+      </h2>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Form.Group as={Row} className="mb-3">
-          <Col sm={3}>
-            <Form.Label htmlFor="firstName" column>
-              First Name:{" "}
-            </Form.Label>
-          </Col>
-          <Col sm={9}>
-            <Form.Control
-              type="text"
-              id="firstName"
-              defaultValue={firstName}
-              {...register("firstName")}
-              isInvalid={errors?.firstName?.message}
-              placeholder="Enter Your First Name"
-            />
-            <Form.Control.Feedback type="invalid" className="d-block">
-              {errors?.firstName?.message}
-            </Form.Control.Feedback>
-          </Col>
-        </Form.Group>
-        <Form.Group as={Row} className="mb-3">
-          <Col sm={3}>
-            <Form.Label htmlFor="lastName" column>
-              Last Name:{" "}
-            </Form.Label>
-          </Col>
-          <Col sm={9}>
-            <Form.Control
-              type="text"
-              id="lastName"
-              name="lastName"
-              defaultValue={lastName}
-              {...register("lastName")}
-              isInvalid={errors?.lastName?.message}
-              placeholder="Enter Your Last Name"
-            />
-            <Form.Control.Feedback type="invalid" className="d-block">
-              {errors?.lastName?.message}
-            </Form.Control.Feedback>
-          </Col>
-        </Form.Group>
-        <Form.Group as={Row} className="mb-3">
-          <Col sm={3}>
-            <Form.Label htmlFor="email" column>
-              Email:{" "}
-            </Form.Label>
-          </Col>
-          <Col sm={9}>
-            <Form.Control
-              type="email"
-              id="email"
-              name="email"
-              defaultValue={email}
-              {...register("email")}
-              isInvalid={errors?.email?.message}
-              placeholder="Enter Your Email"
-            />
-            <Form.Control.Feedback type="invalid" className="d-block">
-              {errors?.email?.message}
-            </Form.Control.Feedback>
-          </Col>
-        </Form.Group>
+        <FormTextInput
+          name="firstName"
+          label="First Name"
+          placeHolder="Enter Your First Name"
+          type="text"
+          errors={errors}
+          register={register}
+          defaultValue={firstName}
+        />
+         <FormTextInput
+          name="lastName"
+          label="Last Name"
+          placeHolder="Enter Your Last Name"
+          errors={errors}
+          register={register}
+          defaultValue={lastName}
+        />
+        <FormTextInput
+          name="email"
+          label="Email"
+          placeHolder="Enter Your Email"
+          type="text"
+          errors={errors}
+          register={register}
+          defaultValue={email}
+        />
         <Form.Group as={Row} className="mb-3">
           <Col sm={3}>
             <Form.Label htmlFor="gender" column>
@@ -179,10 +157,9 @@ console.log(foundContact);
               label="Male"
               type="radio"
               name="gender"
-              defaultChecked={gender === 'male'}
+              defaultChecked={gender === "male"}
               {...register("gender")}
               value="male"
-              
             />
           </Col>
           <Col>
@@ -190,7 +167,7 @@ console.log(foundContact);
               label="Female"
               type="radio"
               name="gender"
-              defaultChecked={gender === 'female'}
+              defaultChecked={gender === "female"}
               {...register("gender")}
               value="female"
             />
@@ -243,27 +220,15 @@ console.log(foundContact);
             />
           </Col>
         </Form.Group>
-        <Form.Group as={Row} className="mb-3">
-          <Col sm={3}>
-            <Form.Label htmlFor="image" column>
-              Image:{" "}
-            </Form.Label>
-          </Col>
-          <Col sm={9}>
-            <Form.Control
-              type="text"
-              id="image"
-              name="image"
-              defaultValue={image}
-              {...register("image")}
-              isInvalid={errors?.image?.message}
-              placeholder="Enter Your Image URL"
-            />
-            <Form.Control.Feedback type="invalid" className="d-block">
-              {errors?.image?.message}
-            </Form.Control.Feedback>
-          </Col>
-        </Form.Group>
+        <FormTextInput
+          name="image"
+          label="Image"
+          placeHolder="Enter Your Image URL"
+          type="text"
+          errors={errors}
+          register={register}
+          defaultValue={image}
+        />
         <Form.Group as={Row} className="mb-3">
           <Col sm={3}>
             <Form.Label htmlFor="bio" column>
@@ -285,8 +250,12 @@ console.log(foundContact);
             </Form.Control.Feedback>
           </Col>
         </Form.Group>
-        <Button type="submit" variant="primary" disabled={isSubmitting ? 'disabled' : ''}>
-        {foundContact?.id ? 'Update Contact' : 'Add Contact'}
+        <Button
+          type="submit"
+          variant="primary"
+          disabled={isSubmitting ? "disabled" : ""}
+        >
+          {foundContact?.id ? "Update Contact" : "Add Contact"}
         </Button>
       </Form>
     </>

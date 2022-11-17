@@ -1,19 +1,10 @@
-import React from "react";
-import { useState } from "react";
-import Contacts from "./pages/Contacts";
-import Header from "./layout/Header";
-import { Container } from "react-bootstrap";
-import ContactForm from "./components/contacts/ContactForm";
+import { createContext, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { ToastContainer } from "react-toastify";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import NotFound from "./pages/NotFound";
-import LogIn from "./pages/LogIn";
-import Register from "./pages/Register";
-import Home from "./pages/Home";
-import EditContact from "./pages/EditContact";
-import AddContact from "./pages/AddContact";
-import ContactDetails from "./pages/ContactDetails";
+import { useEffect } from "react";
+import { axiosPrivateInstance} from "../config/axios";
+import {formatContact} from '../utils/formatContact'
+
+export const ContactContext = createContext();
 
 const initialContacts = [
   {
@@ -96,8 +87,31 @@ const initialContacts = [
   },
 ];
 
-function App() {
+
+
+export const ContactProvider = ({ children }) => {
   const [contacts, setContacts] = useState(initialContacts);
+  const [loaded, setLoaded] = useState(false)
+
+  useEffect(() => {
+    (async () => {
+      await loadContacts();
+    })();
+  }, []);
+
+  const loadContacts = async () => {
+    try {
+      const response = await axiosPrivateInstance.get("/contacts");
+      const loadedContact = response.data.data.map(contact => formatContact(contact))
+      console.log(loadedContact);
+      setLoaded(true)
+      setContacts(loadedContact)
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+ 
 
   const deleteContact = (id) => {
     // console.log(id);
@@ -130,66 +144,15 @@ function App() {
     setContacts([updatedContacts, ...contacts]);
   };
 
+  const value = {
+    loaded,
+    contacts,
+    deleteContact,
+    updateContact,
+    addContact,
+  };
+
   return (
-    <>
-      <BrowserRouter>
-        <Header />
-        <ToastContainer
-          position="top-right"
-          autoClose={2000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
-        <Container
-          className="text-center mt-3"
-          style={{ width: "800px", margin: "0 auto" }}
-        >
-          <Routes>
-            <Route path="/home" index element={<Home />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<LogIn />} />
-
-            <Route
-              path="/add-contact"
-              element={<AddContact addContact={addContact} />}
-            />
-            <Route
-              path="/contacts"
-              element={
-                <Contacts contacts={contacts} deleteContact={deleteContact} />
-              }
-            />
-            <Route
-              path="/edit-contact/:id"
-              element={
-                <EditContact
-                  updateContact={updateContact}
-                  contacts={contacts}
-                />
-              }
-            />
-             <Route
-              path="/contacts/:id"
-              element={
-                <ContactDetails
-                  contacts={contacts}
-                  deleteContact={deleteContact}
-                />
-              }
-            />
-
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Container>
-      </BrowserRouter>
-    </>
+    <ContactContext.Provider value={value}>{children}</ContactContext.Provider>
   );
-}
-
-export default App;
+};

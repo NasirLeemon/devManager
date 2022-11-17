@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 // import {AiFillEye}  from 'react-icons'
@@ -7,10 +7,13 @@ import { Button } from "react-bootstrap";
 import {format} from 'date-fns'
 import { toast } from 'react-toastify'
 import {Link} from 'react-router-dom'
+import { ContactContext } from "../../context/ContactContext";
 
-function Contact({ contact, deleteContact }) {
+function Contact({ contact}) {
 //   console.log(contact);
 
+const context = useContext(ContactContext)
+ const {deleteContact} = context
   const {
     id,
     firstName,
@@ -24,7 +27,6 @@ function Contact({ contact, deleteContact }) {
   } = contact;
 
   const handleDelete = (id) =>{
-    console.log(id);
     deleteContact(id)
     toast.dark('Contact Deleted Successfully')
     

@@ -1,10 +1,14 @@
-import React from 'react'
+import Reactcd from 'react'
 import ContactForm from '../components/contacts/ContactForm'
 
-function AddContact({addContact}) {
+
+function AddContact() {
+
+
+
   return (<>
     <div>Add Contact</div>
-    <ContactForm  addContact={addContact} />
+    <ContactForm  />
   </>
   )
 }

@@ -1,0 +1,70 @@
+{
+  "kind": "collectionType",
+  "collectionName": "contacts",
+  "info": {
+    "singularName": "contact",
+    "pluralName": "contacts",
+    "displayName": "Contacts",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "firstName": {
+      "type": "string",
+      "required": true,
+      "minLength": 3
+    },
+    "lastName": {
+      "type": "string",
+      "required": true,
+      "minLength": 3
+    },
+    "email": {
+      "type": "email",
+      "required": true,
+      "unique": true
+    },
+    "image": {
+      "type": "string",
+      "required": true
+    },
+    "profession": {
+      "type": "enumeration",
+      "enum": [
+        "developer",
+        "designer",
+        "marketer"
+      ],
+      "default": "developer",
+      "required": true
+    },
+    "gender": {
+      "type": "enumeration",
+      "enum": [
+        "male",
+        "female"
+      ],
+      "default": "male",
+      "required": true
+    },
+    "dateOfBirth": {
+      "type": "date",
+      "required": true
+    },
+    "bio": {
+      "type": "richtext",
+      "minLength": 10,
+      "maxLength": 300,
+      "required": true
+    },
+    "author": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "contacts"
+    }
+  }
+}
