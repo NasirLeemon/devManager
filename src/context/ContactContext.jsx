@@ -105,7 +105,7 @@ export const ContactProvider = ({ children }) => {
 
   const loadContacts = async () => {
     try {
-      const response = await axiosPrivateInstance.get("/contacts");
+      const response = await axiosPrivateInstance.get("/contacts?populate=*"); 
       const loadedContact = response.data.data.map((contact) =>
         formatContact(contact)
       );
@@ -124,7 +124,7 @@ export const ContactProvider = ({ children }) => {
     try {
       const response = await axiosPrivateInstance.delete(`/contacts/${id}`)
       const updatedContact = contacts.filter((contact) => contact.id !== id);
-      console.log(updatedContact);
+      // console.log(updatedContact);
     setContacts(updatedContact);
     toast.dark('Contact Deleted Successfully')
     navigate('/contacts')
@@ -136,19 +136,33 @@ export const ContactProvider = ({ children }) => {
     
   };
 
-  const updateContact = (contactToUpdate, id) => {
-    const contactsWithUpdate = contacts.map((contact) => {
-      if (contact.id === id) {
-        return {
-          id,
-          ...contactToUpdate,
-        };
-      } else {
-        return contact;
-      }
-    });
+  const updateContact = async (contactToUpdate, id) => {
+try {
+  const response = await axiosPrivateInstance.put(`/contacts/${id}`, {
+    data : contactToUpdate,
+  })
 
-    setContacts(contactsWithUpdate);
+  const contact = formatContact(response.data.data)
+
+  const contactsWithUpdate = contacts.map((contact) => {
+    if (contact.id === id) {
+      return {
+        id,
+        ...contactToUpdate,
+      };
+    } else {
+      return contact;
+    }
+  });
+  // console.log(contactsWithUpdate);
+  setContacts(contactsWithUpdate);
+  toast.success("Contact Updated Successfully");
+  navigate(`/contacts/${contact.id}`)
+} catch (error) {
+      toast.dark(error.response?.data?.error?.message);
+}
+
+  
   };
 
   const addContact = async (contact) => {
@@ -157,13 +171,9 @@ export const ContactProvider = ({ children }) => {
     //   id: uuidv4(),
     //   ...contact,
     // };
-    contact = {
-      author : user.id,
-      ...contact,
-    }
-
+  
     try {
-      const response = await axiosPrivateInstance.post("/contacts", {
+      const response = await axiosPrivateInstance.post("/contacts?populate=*", {
         data: contact,
       });
       console.log(response.data.data);

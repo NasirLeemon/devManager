@@ -10,9 +10,9 @@ function EditContact() {
   const {contacts} = context
 
 const {id} = useParams()
-console.log(id);
+// console.log(id);
 
-const foundContact = contacts.find((contact)=>(contact.id === id))  
+const foundContact = contacts.find((contact)=>(contact.id === +id))  
 
   return (
     <>

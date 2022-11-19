@@ -85,7 +85,7 @@ function ContactForm({ foundContact }) {
     profession: foundContact?.profession || "developer",
     image:
       foundContact?.image ||
-      "https://scontent-ccu1-1.xx.fbcdn.net/v/t39.30808-6/283783578_1618795568496799_5358402685246666311_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=730e14&_nc_eui2=AeFavoevnXaGXr3_swd8tcFYZCvtwUX0RhhkK-3BRfRGGILF2uKUSa_Ivk2-iSteROID_7a6KbpcHoOIVyuxN6FK&_nc_ohc=el5xOuiL_KIAX_JbUaY&_nc_ht=scontent-ccu1-1.xx&oh=00_AfDVfrj2CtQ-qHrynaC_8Bez9um-wuVd9kd1Lej_3QUUcA&oe=6363D906",
+      "https://scontent.fdac24-1.fna.fbcdn.net/v/t39.30808-6/301474655_1687086121667743_2635715924098706894_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_eui2=AeFZzigqlVfffJ9Z9QVw8GeFNmHg-wL2-Tc2YeD7Avb5N7_QWlke6EJNQaQ6bxzSSU9zmYt0ZFUzDo7_hLR7bKSN&_nc_ohc=kYyja4yJ2nkAX-R6Q7r&_nc_ht=scontent.fdac24-1.fna&oh=00_AfDSvhB6LjDg-Y1WVhn0cheuxXCP8A6mnPFCxaro0jKJJg&oe=637E11FD",
     bio: foundContact?.bio || "Bio Bio Bio Bio bio Bio N9p",
     dateOfBirth: foundContact?.dateOfBirth || "23/12/1995",
   };
@@ -103,7 +103,6 @@ function ContactForm({ foundContact }) {
 
   const onSubmit = (data) => {
     if (foundContact?.id) {
-      toast.success("Contact Updated Successfully");
       updateContact(data, foundContact?.id);
     } else {
       addContact(data);
