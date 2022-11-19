@@ -18,7 +18,7 @@ function ContactDetails() {
     const [contact, setContact] = useState({})
     const navigate = useNavigate()
     const {id} = useParams()
-    const foundContact = contacts.find((contact)=>(contact.id === id))
+    const foundContact = contacts.find((contact)=>(contact.id === +id))
 
     useEffect(()=>{
         if (id && foundContact) {
@@ -29,8 +29,7 @@ function ContactDetails() {
     const {firstName, lastName, email, image, profession, bio, gender, dateOfBirth} = contact
 
     const handleDelete = (id) => {
-        deleteContact(id)
-        navigate('/contacts')
+        deleteContact(+id)
     }
 
   return (

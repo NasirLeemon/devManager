@@ -49,8 +49,7 @@ function ContactForm({ foundContact }) {
   const { addContact, updateContact } = context;
 
   const [birthYear, setBirthYear] = useState(new Date());
-  const navigate = useNavigate();
-  console.log(foundContact);
+  // console.log(foundContact);
   const {
     register,
     handleSubmit,
@@ -107,10 +106,8 @@ function ContactForm({ foundContact }) {
       toast.success("Contact Updated Successfully");
       updateContact(data, foundContact?.id);
     } else {
-      toast.success("Contact Added Successfully");
       addContact(data);
     }
-    navigate("/contacts");
   };
 
   return (

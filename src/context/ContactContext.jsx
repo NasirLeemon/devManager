@@ -1,8 +1,12 @@
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useEffect } from "react";
-import { axiosPrivateInstance} from "../config/axios";
-import {formatContact} from '../utils/formatContact'
+import { axiosPrivateInstance } from "../config/axios";
+import { formatContact } from "../utils/formatContact";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { AuthContext } from "./Auth.Context";
+
 
 export const ContactContext = createContext();
 
@@ -87,12 +91,12 @@ const initialContacts = [
   },
 ];
 
-
-
 export const ContactProvider = ({ children }) => {
   const [contacts, setContacts] = useState(initialContacts);
-  const [loaded, setLoaded] = useState(false)
+  const [loaded, setLoaded] = useState(false);
+  const {user} = useContext(AuthContext)
 
+  const navigate = useNavigate()
   useEffect(() => {
     (async () => {
       await loadContacts();
@@ -102,21 +106,34 @@ export const ContactProvider = ({ children }) => {
   const loadContacts = async () => {
     try {
       const response = await axiosPrivateInstance.get("/contacts");
-      const loadedContact = response.data.data.map(contact => formatContact(contact))
+      const loadedContact = response.data.data.map((contact) =>
+        formatContact(contact)
+      );
       console.log(loadedContact);
-      setLoaded(true)
-      setContacts(loadedContact)
+      setLoaded(true);
+      setContacts(loadedContact);
     } catch (error) {
-      console.log(error.response);
+      // console.log(error.response);
+      toast.dark(error.response?.data?.error?.message);
+
     }
   };
 
- 
-
-  const deleteContact = (id) => {
+  const deleteContact = async (id) => {
     // console.log(id);
-    const updatedContact = contacts.filter((contact) => contact.id !== id);
+    try {
+      const response = await axiosPrivateInstance.delete(`/contacts/${id}`)
+      const updatedContact = contacts.filter((contact) => contact.id !== id);
+      console.log(updatedContact);
     setContacts(updatedContact);
+    toast.dark('Contact Deleted Successfully')
+    navigate('/contacts')
+    } catch (error) {
+      // console.log(error.response);
+      toast.dark(error.response?.data?.error?.message);
+
+    }
+    
   };
 
   const updateContact = (contactToUpdate, id) => {
@@ -134,14 +151,34 @@ export const ContactProvider = ({ children }) => {
     setContacts(contactsWithUpdate);
   };
 
-  const addContact = (contact) => {
+  const addContact = async (contact) => {
     // console.log(contact);
-    const updatedContacts = {
-      id: uuidv4(),
+    // const updatedContacts = {
+    //   id: uuidv4(),
+    //   ...contact,
+    // };
+    contact = {
+      author : user.id,
       ...contact,
-    };
+    }
 
-    setContacts([updatedContacts, ...contacts]);
+    try {
+      const response = await axiosPrivateInstance.post("/contacts", {
+        data: contact,
+      });
+      console.log(response.data.data);
+
+      const contactFromServer = formatContact(response.data.data)
+      setContacts([contactFromServer, ...contacts]);
+      toast.success("Contact Added Successfully");
+      navigate("/contacts");
+    } catch (error) {
+      // console.log(error.response);
+      toast.dark(error.response?.data?.error?.message);
+
+    }
+
+    
   };
 
   const value = {

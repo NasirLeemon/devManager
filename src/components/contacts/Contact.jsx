@@ -28,8 +28,6 @@ const context = useContext(ContactContext)
 
   const handleDelete = (id) =>{
     deleteContact(id)
-    toast.dark('Contact Deleted Successfully')
-    
   }
 
  
