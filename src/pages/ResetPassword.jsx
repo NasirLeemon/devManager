@@ -4,22 +4,28 @@ import FormTextInput from '../layout/FormTextInput'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import {Form, Button} from 'react-bootstrap'
-import { AuthContext } from '../context/Auth.Context'
 import { axiosPublicInstance } from '../config/axios'
-import {Link} from  'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+
 
 
 const schema = yup.object({
-  email: yup
-    .string()
-    .required('Email is Required'),
-  password: yup
+    password: yup
     .string()
     .required('password is required')
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/,
+      'Must Contain 6 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character'
+    ),
+  confirmPassword: yup
+    .string()
+    .required('confirm Password is Required')
+    .oneOf([yup.ref('password')], "confirm password doesn't match"),
  
 })
 
-function LogIn() {
+function ResetPassword() {
   const {
     register,
     handleSubmit,
@@ -29,52 +35,53 @@ function LogIn() {
     resolver: yupResolver(schema),
   })
 
-const context = useContext(AuthContext)
-const {logIn} = context;
+const [searchParams] = useSearchParams()
+const code = searchParams.get('code')
+
+const navigate = useNavigate()
 
 
+const onSubmit = async (data) => {
 
-const onSubmit = (data) => {
-  console.log(data);
-logIn({
-  identifier: data.email,
-  password: data.password
-})
+try {
+    const response = await axiosPublicInstance.post('/auth/reset-password', {
+        code: code,
+        password: data.password,
+        passwordConfirmation: data.confirmPassword,
+    })
+
+    console.log(response.data);
+    navigate('/logIn')
+} catch (error) {
+    console.log(error.response);
+}
 
 }
 
 
   return (
     <>
-<h2 className='text-center mb-3'>Log In</h2>
+<h2 className='text-center mb-3'>Reset Password </h2>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <FormTextInput
-          name='email'
-          label='Email'
-          placeholder='Enter Your Email'
-          errors={errors}
-          register={register}
-          defaultValue='leemon174@gmail.com'
-        />
-        <FormTextInput
           name='password'
-          label='password'
+          label='Password'
           placeholder='Enter password'
           errors={errors}
           register={register}
           type='password'
-          defaultValue='abcdeFf1@'
+         
         />
         <FormTextInput
           name='confirmPassword'
-          label='confirm Password'
+          label='Confirm Password'
           placeholder='Confirm password'
           errors={errors}
           register={register}
           type='password'
-          defaultValue='abcdeFf1@'
+         
         />
-<p>Forgot Password? <Link to='/forgot-password'> Click Here </Link></p>
+
         <Button
           variant='primary'
           size='md'
@@ -82,7 +89,7 @@ logIn({
           disabled={isSubmitting ? 'disabled' : ''}
           className='text-center d-inline-block w-auto'
         >
-          Log In
+          Reset
         </Button>
       </Form>
 
@@ -90,4 +97,4 @@ logIn({
   )
 }
 
-export default LogIn
+export default ResetPassword 

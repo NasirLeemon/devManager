@@ -99,17 +99,19 @@ export const ContactProvider = ({ children }) => {
   const navigate = useNavigate()
   useEffect(() => {
     (async () => {
-      await loadContacts();
+      if (user) {
+        await loadContacts();
+      }
     })();
-  }, []);
+  }, [user]);
 
   const loadContacts = async () => {
     try {
       const response = await axiosPrivateInstance.get("/contacts?populate=*"); 
-      const loadedContact = response.data.data.map((contact) =>
+      const loadedContact = response?.data?.data?.map((contact) =>
         formatContact(contact)
       );
-      console.log(loadedContact);
+      // console.log(loadedContact);
       setLoaded(true);
       setContacts(loadedContact);
     } catch (error) {

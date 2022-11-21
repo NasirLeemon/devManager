@@ -1,8 +1,9 @@
 import { createContext, useState } from "react";
 import { toast } from "react-toastify";
-import { axiosPublicInstance } from "../config/axios";
+import { axiosPrivateInstance, axiosPublicInstance } from "../config/axios";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 
 export const AuthContext = createContext()
@@ -17,7 +18,45 @@ export const AuthProvider = ({children}) => {
 
 const [user, setUser] = useState(loadedUser? loadedUser : null)
 const [token, setToken] = useState( loadedToken? loadedToken :null)
+const [userContacts, setuserContacts] = useState(null)
+const [loaded, setLoaded] = useState(false)
+const [triggerDelete, setTriggerDelete] = useState(false)
+
 const location = useLocation()
+
+
+// useEffect(()=>{
+//     if (user) {
+//         (async()=>{
+//            await loadUserContacts()
+//         })
+//     }
+// },[user])
+
+useEffect(()=>{
+    if (user) {
+        ;(async ()=> {
+            await loadUserContacts()
+        })()
+    }
+},[user, triggerDelete])
+
+const loadUserContacts = async() => {
+
+try {
+    const response = await axiosPrivateInstance.get('/users/me?populate=contacts')
+    // console.log(response.data);
+    setLoaded(true)
+    setuserContacts(response.data.contacts)
+} catch (error) {
+    console.log(error.response);
+    setLoaded(true)
+
+}
+
+}
+
+
 
 const registerUser = async (data) => {
     console.log(data);
@@ -68,7 +107,7 @@ const logOut = () => {
     setUser(null)
     setToken(null)
     toast.success('Logout successful rdirecting...')
-    navigate('/home')
+    navigate('/logIn')
 }
 
 
@@ -76,6 +115,9 @@ const logOut = () => {
 
 
 const value = {
+    setTriggerDelete,
+    userContacts,
+    loaded,
   registerUser,
   logIn,
   logOut,

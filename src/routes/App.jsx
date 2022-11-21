@@ -13,6 +13,11 @@ import AddContact from "../pages/AddContact";
 import ContactDetails from "../pages/ContactDetails";
 import DashBoard from "../pages/DashBoard";
 import PrivateRoute from "./PrivateRoute";
+import Profile from "../pages/Profile";
+import ManagePassword from "../pages/ManagePassword";
+import UserContactList from "../pages/UserContactList";
+import ForgotPassword from "../pages/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword";
 
 function App() {
   return (
@@ -20,7 +25,7 @@ function App() {
       <Header />
       <ToastContainer
         position="top-right"
-        autoClose={2000}
+        autoClose={1000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -69,7 +74,16 @@ function App() {
           <PrivateRoute>
             <DashBoard />
             </PrivateRoute>
-            } />
+            }>
+            <Route index element={<Profile />} />              
+            <Route path="profile" element={<Profile />} />
+            <Route path="manage-password" element={<ManagePassword />} />              
+            <Route path="contacts" element={<UserContactList />} />              
+
+            </Route>
+            <Route path='/forgot-password' element={<ForgotPassword />} />
+            <Route path='/reset-password' element={<ResetPassword />} />
+
 
           <Route path="*" element={<NotFound />} />
         </Routes>

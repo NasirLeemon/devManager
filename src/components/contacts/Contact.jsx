@@ -27,7 +27,7 @@ const {user} = useContext(AuthContext)
     gender,
     email,
   } = contact;
-  const isOwner = user.id === contact.author.data.id 
+  const isOwner = user.id === contact.author?.data?.id 
 
   const handleDelete = (id) => {
     deleteContact(id);

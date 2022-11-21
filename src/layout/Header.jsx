@@ -14,7 +14,7 @@ function Header() {
     <>
       <Navbar bg="light" expand="lg">
         <Container fluid>
-          <Navbar.Brand as={Link} to="home">
+          <Navbar.Brand as={Link} to="/contacts">
             Bloggers
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbarScroll" />
@@ -32,6 +32,10 @@ function Header() {
                   <Nav.Link as={NavLink} to="add-contact">
                     Add Contact
                   </Nav.Link>
+                  <Nav.Link as={NavLink} to="dashboard/profile">
+                    Dashboard
+                  </Nav.Link>
+                  
                   <Nav.Link onClick={logOut}>Log Out</Nav.Link>
                 </>
               )}

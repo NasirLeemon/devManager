@@ -17,7 +17,7 @@ function ContactDetails() {
   const { id } = useParams();
   const foundContact = contacts.find((contact) => contact.id === +id);
 
-  const isOwner = user.id === foundContact.author.data.id;
+  const isOwner = user.id === foundContact.author?.data?.id;
 
   useEffect(() => {
     if (id && foundContact) {
