@@ -1,5 +1,4 @@
 import { createContext, useContext, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { useEffect } from "react";
 import { axiosPrivateInstance } from "../config/axios";
 import { formatContact } from "../utils/formatContact";
@@ -168,11 +167,6 @@ try {
   };
 
   const addContact = async (contact) => {
-    // console.log(contact);
-    // const updatedContacts = {
-    //   id: uuidv4(),
-    //   ...contact,
-    // };
   
     try {
       const response = await axiosPrivateInstance.post("/contacts?populate=*", {
