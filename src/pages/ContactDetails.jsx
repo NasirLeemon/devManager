@@ -89,7 +89,7 @@ function ContactDetails() {
                         </Button>
                       </Card.Link>
                     </>
-                  )}
+                   )}
                 </div>
               </Card.Body>
             </div>

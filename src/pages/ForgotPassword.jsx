@@ -28,12 +28,15 @@ function ForgotPassword() {
 
 
     const onSubmit = async (data) => {
+      console.log('Clicked Button');
        try {
         
            const response = await axiosPublicInstance.post('/auth/forgot-password',{
             email: data.email
            })
-           toast.success('Email is send with password Reset Link')
+           console.log(response);
+           toast.success('Email is send with password Reset Link 1')
+           toast.success('Email is send with password Reset Link 2')
        } catch (error) {
         console.log(error.response);
        }

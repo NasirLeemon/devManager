@@ -18,6 +18,7 @@ import ManagePassword from "../pages/ManagePassword";
 import UserContactList from "../pages/UserContactList";
 import ForgotPassword from "../pages/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
+import Upload from "../pages/Upload";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         className="text-center mt-3"
         style={{ width: "800px", margin: "0 auto" }}
       >
+       
         <Routes>
           <Route
             index
@@ -50,40 +52,54 @@ function App() {
           />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<LogIn />} />
-          <Route path="/add-contact" element={
-          <PrivateRoute>
-            <AddContact />
-            </PrivateRoute>
-            } />
-          <Route path="/contacts" element={
-          <PrivateRoute>
-            <Contacts />
-            </PrivateRoute>
-            } />
-          <Route path="/edit-contact/:id" element={
-          <PrivateRoute>
-            <EditContact />
-            </PrivateRoute>
-            } />
-          <Route path="/contacts/:id" element={
-          <PrivateRoute>
-            <ContactDetails />
-            </PrivateRoute>
-            } />
-          <Route path="/dashboard" element={
-          <PrivateRoute>
-            <DashBoard />
-            </PrivateRoute>
-            }>
-            <Route index element={<Profile />} />              
+          <Route
+            path="/add-contact"
+            element={
+              <PrivateRoute>
+                <AddContact />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/contacts"
+            element={
+              <PrivateRoute>
+                <Contacts />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/edit-contact/:id"
+            element={
+              <PrivateRoute>
+                <EditContact />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/contacts/:id"
+            element={
+              <PrivateRoute>
+                <ContactDetails />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <DashBoard />
+              </PrivateRoute>
+            }
+          >
+            <Route index element={<Profile />} />
             <Route path="profile" element={<Profile />} />
-            <Route path="manage-password" element={<ManagePassword />} />              
-            <Route path="contacts" element={<UserContactList />} />              
-
-            </Route>
-            <Route path='/forgot-password' element={<ForgotPassword />} />
-            <Route path='/reset-password' element={<ResetPassword />} />
-
+            <Route path="manage-password" element={<ManagePassword />} />
+            <Route path="contacts" element={<UserContactList />} />
+            <Route path="upload" element={<Upload />} />
+          </Route>
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

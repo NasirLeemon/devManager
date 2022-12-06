@@ -20,6 +20,9 @@ function DashBoard() {
             <ListGroup.Item action as={NavLink} to='manage-password'>
               Manage Password
             </ListGroup.Item>
+            <ListGroup.Item action as={NavLink} to='upload'>
+              Upload
+            </ListGroup.Item>
           </ListGroup>
         </Col>
         <Col sm={8}>

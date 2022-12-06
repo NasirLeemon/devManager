@@ -94,15 +94,27 @@ export const ContactProvider = ({ children }) => {
   const [contacts, setContacts] = useState(initialContacts);
   const [loaded, setLoaded] = useState(false);
   const {user} = useContext(AuthContext)
+  const { token } = useContext(AuthContext)
+  
+
+
 
   const navigate = useNavigate()
-  useEffect(() => {
-    (async () => {
-      if (user) {
-        await loadContacts();
-      }
-    })();
-  }, [user]);
+  // useEffect(() => {
+  //   (async () => {
+  //     if (user) {
+  //       await loadContacts();
+  //     }
+  //   })();
+  // }, [user]);
+
+  useEffect(()=>{
+    if (user) {
+      ;(async ()=>{
+        await loadContacts()
+      })()
+    }
+  },[user])
 
   const loadContacts = async () => {
     try {
@@ -114,7 +126,7 @@ export const ContactProvider = ({ children }) => {
       setLoaded(true);
       setContacts(loadedContact);
     } catch (error) {
-      // console.log(error.response);
+      console.log('loadContact-',error.response);
       toast.dark(error.response?.data?.error?.message);
 
     }
@@ -130,7 +142,7 @@ export const ContactProvider = ({ children }) => {
     toast.dark('Contact Deleted Successfully')
     navigate('/contacts')
     } catch (error) {
-      // console.log(error.response);
+      console.log('deleteContact-' , error.response);
       toast.dark(error.response?.data?.error?.message);
 
     }
@@ -167,6 +179,7 @@ try {
   };
 
   const addContact = async (contact) => {
+
   
     try {
       const response = await axiosPrivateInstance.post("/contacts?populate=*", {
@@ -179,7 +192,7 @@ try {
       toast.success("Contact Added Successfully");
       navigate("/contacts");
     } catch (error) {
-      // console.log(error.response);
+      console.log('addContact-',error.response);
       toast.dark(error.response?.data?.error?.message);
 
     }

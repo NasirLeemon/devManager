@@ -9,6 +9,7 @@ import { ContactProvider } from './context/ContactContext';
 import { AuthProvider } from './context/Auth.Context';
 import { BrowserRouter } from 'react-router-dom';
 
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>

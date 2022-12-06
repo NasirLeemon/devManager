@@ -10,8 +10,9 @@ import { ContactContext } from '../context/ContactContext';
 
 function UserContactList() {
 
-const {userContacts, loaded, setTriggerDelete} = useContext(AuthContext)
-// console.log(userContacts);
+
+const {userContactList, loaded, setTriggerDelete} = useContext(AuthContext)
+console.log(userContactList);
 
 const {deleteContact} = useContext(ContactContext)
 
@@ -37,7 +38,7 @@ const handleDelete = (id) => {
         </tr>
       </thead>
       <tbody>
-        {userContacts.map((userContact)=>{
+        { userContactList && userContactList?.map((userContact)=>{
           return (
             <tr key={userContact.id}>
             <td>{userContact.id}</td>

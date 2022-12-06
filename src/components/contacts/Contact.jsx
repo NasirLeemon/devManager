@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import Card from "react-bootstrap/Card";
-import ListGroup from "react-bootstrap/ListGroup";
-// import {AiFillEye}  from 'react-icons'
+import ListGroup from "react-bootstrap/ListGroup"; 
 import { FaEye, FaRegTrashAlt } from "react-icons/fa";
 import { Button } from "react-bootstrap";
 import { format } from "date-fns";
@@ -74,7 +73,8 @@ const {user} = useContext(AuthContext)
               <FaRegTrashAlt />
             </Button>
             
-          </Card.Link>}
+          </Card.Link>
+          }
             
           </div>
         </Card.Body>
